@@ -1,0 +1,12 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: bobby;
+}
+
+@font-face {
+  font-family: bobby;
+  src: url("./assets/fonts/bobby-jones-condensed.otf") format("opentype");
+}
