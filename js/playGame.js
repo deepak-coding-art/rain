@@ -25,6 +25,8 @@ class PlayGame extends Phaser.Scene {
     this.timer = 0;
     this.interval;
     this.dTouchTimer;
+    this.lastTurn;
+    this.jump;
   }
 
   preload() {
@@ -135,6 +137,8 @@ class PlayGame extends Phaser.Scene {
     this.interval = undefined;
     this.lifeBarY = this.game.config.height - 50;
     this.dTouchTimer = this.time.now;
+    this.lastTurn = "right";
+    this.jump = false;
 
     this.add.image(
       this.game.config.width / 2,
@@ -178,8 +182,14 @@ class PlayGame extends Phaser.Scene {
     });
 
     this.anims.create({
+      key: "turn-right",
+      frames: [{ key: "dude", frame: 13 }],
+      frameRate: 20,
+    });
+
+    this.anims.create({
       key: "right",
-      frames: this.anims.generateFrameNumbers("dude", { start: 7, end: 13 }),
+      frames: this.anims.generateFrameNumbers("dude", { start: 7, end: 12 }),
       frameRate: 10,
       repeat: -1,
     });
@@ -211,6 +221,14 @@ class PlayGame extends Phaser.Scene {
 
     this.touch = this.input.activePointer;
     this.cursors = this.input.keyboard.createCursorKeys();
+
+    this.input.on("pointerdown", () => {
+      let clickDelay = this.time.now - this.dTouchTimer;
+      this.dTouchTimer = this.time.now;
+      if (clickDelay < 350) {
+        this.jump = true;
+      }
+    });
   }
 
   update() {
@@ -222,6 +240,7 @@ class PlayGame extends Phaser.Scene {
     //   itr: this.IterationCount,
     //   score: this.score,
     //   int: this.interval,
+    //   turn: this.lastTurn,
     // });
     if (this.gameOver) return;
     if (this.IterationCount <= 0) {
@@ -229,22 +248,27 @@ class PlayGame extends Phaser.Scene {
     }
     this.touch = this.input.activePointer;
     const side = this.checkTouch();
-    const jump = this.checkDoubleTouch();
     if (side === "left" || this.cursors.left.isDown) {
       this.player.setVelocityX(-160);
+      this.lastTurn = "left";
       this.player.anims.play("left", true);
     } else if (side === "right" || this.cursors.right.isDown) {
       this.player.setVelocityX(160);
+      this.lastTurn = "right";
       this.player.anims.play("right", true);
     } else if (
-      (jump && this.player.body.touching.down) ||
+      (this.jump && this.player.body.touching.down) ||
       (this.cursors.up.isDown && this.player.body.touching.down)
     ) {
       this.player.setVelocityY(-330);
-      // this.player.anims.play("right", true);
+      this.jump = false;
     } else {
       this.player.setVelocityX(0);
-      this.player.anims.play("turn");
+      if (this.lastTurn === "right") {
+        this.player.anims.play("turn-right");
+      } else {
+        this.player.anims.play("turn");
+      }
     }
 
     this.IterationCount--;
@@ -276,20 +300,6 @@ class PlayGame extends Phaser.Scene {
       }
     } else {
       return "stand";
-    }
-  }
-
-  checkDoubleTouch() {
-    if (this.touch.isDown) {
-      console.log(this.touch);
-      // const clickDelay = this.time.now - this.dTouchTimer;
-      // this.dTouchTimer = this.time.now;
-      // console.log(clickDelay, this.dTouchTimer);
-      // if (clickDelay < 350) {
-      //   return true;
-      // } else {
-      //   return false;
-      // }
     }
   }
 

@@ -86,11 +86,11 @@ class StartGame extends Phaser.Scene {
       "background"
     );
     // Help
-    let objectives = ["Objective: Avoid the rain drops to save your lives!"];
+    let objectives = ["Objective:", "Avoid the rain drops to save your lives!"];
     let lines = [
+      "Controls:",
       "Press left, right arrow key to go left and right",
-      "or",
-      "touch Left to go left and right to go right on screen",
+      "up key for jump",
     ];
     let textConfig = {
       color: "#000000",
@@ -98,13 +98,16 @@ class StartGame extends Phaser.Scene {
       fontSize: "30px",
     };
     if (this.game.config.width < 500) {
-      objectives = ["Objective: Avoid the rain drops", "to save your lives!"];
+      objectives = [
+        "Objective:",
+        "Avoid the rain drops",
+        "to save your lives!",
+      ];
       lines = [
-        "Press left, right arrow key",
-        "to go left and right",
-        "or",
+        "Controls:",
         "touch Left to go left and",
         "right to go right on screen",
+        "double tap for jump",
       ];
     }
 
