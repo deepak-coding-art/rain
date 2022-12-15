@@ -108,7 +108,6 @@ class PlayGame extends Phaser.Scene {
       frameHeight: 31,
     });
     this.load.image("life", "./assets/life.png");
-    this.load.image("logo", "./assets/rain_logo__white.png");
   }
 
   create() {
@@ -142,11 +141,6 @@ class PlayGame extends Phaser.Scene {
       this.game.config.height / 2,
       "background"
     );
-
-    this.add
-      .image(this.game.config.width - 150, 100, "logo")
-      .setScale(0.05)
-      .setOrigin(0.5);
 
     this.ground = this.physics.add.staticGroup();
     this.ground.create(
